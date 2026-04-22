@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wheel of Habits</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <h1 class="title">Wheel of Habits</h1>
+        <p class="subtitle">REWARD YOURSELF FOR COMPLETING A GOOD HABIT EVERY DAY</p>
+      </header>
+
+      <main class="main-content">
+        <div class="wheel-container">
+          <svg id="wheel-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+
+        <section class="stats-section">
+          <h2 class="stats-title">HABIT PROGRESS & GOALS</h2>
+          <div class="stats-grid" id="stats-grid">
+            <!-- Stats will be generated here -->
+          </div>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
