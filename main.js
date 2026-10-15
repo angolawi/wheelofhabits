@@ -630,7 +630,6 @@ function setupPdfModal({ getState, getMonthYearText, getDaysCount, getMonthKey }
   const confirmBtn = document.getElementById('modal-confirm-btn');
   const spinner = document.getElementById('modal-confirm-spinner');
   const confirmText = document.getElementById('modal-confirm-text');
-  const includeStatsCheckbox = document.getElementById('pdf-include-stats');
   const hintText = document.getElementById('pdf-modal-hint-text');
 
   if (!downloadBtn || !modal) return;
@@ -670,7 +669,6 @@ function setupPdfModal({ getState, getMonthYearText, getDaysCount, getMonthKey }
 
         const selectedThemeRadio = document.querySelector('input[name="pdf-theme"]:checked');
         const theme = selectedThemeRadio ? selectedThemeRadio.value : 'dark';
-        const includeStats = includeStatsCheckbox ? includeStatsCheckbox.checked : true;
 
         const monthKey = getMonthKey();
         const fileName = `roda-de-habitos-${monthKey}.pdf`;
@@ -680,7 +678,6 @@ function setupPdfModal({ getState, getMonthYearText, getDaysCount, getMonthKey }
           theme,
           daysCount: getDaysCount(),
           monthYearText: getMonthYearText(),
-          includeStats,
           title: 'Roda de Hábitos',
           subtitle: 'Faça o seu melhor, todos os dias',
           fileName

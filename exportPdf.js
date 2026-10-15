@@ -279,7 +279,6 @@ export async function generateAndDownloadPdf({
   theme = 'dark',
   daysCount = 31,
   monthYearText = '',
-  includeStats = true,
   title = 'Roda de Hábitos',
   subtitle = 'Faça o seu melhor, todos os dias',
   fileName = 'roda-de-habitos.pdf'
@@ -314,140 +313,36 @@ export async function generateAndDownloadPdf({
   // Header Title
   const displayTitle = monthYearText ? `${title} • ${monthYearText}` : title;
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(20);
+  doc.setFontSize(22);
   if (isLight) {
     doc.setTextColor(36, 41, 47);
   } else {
     doc.setTextColor(240, 246, 252);
   }
-  doc.text(displayTitle, pageWidth / 2, 16, { align: 'center' });
+  doc.text(displayTitle, pageWidth / 2, 22, { align: 'center' });
 
   // Subtitle
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9.5);
+  doc.setFontSize(10);
   if (isLight) {
     doc.setTextColor(87, 96, 106);
   } else {
     doc.setTextColor(139, 148, 158);
   }
-  doc.text(subtitle, pageWidth / 2, 22, { align: 'center' });
+  doc.text(subtitle, pageWidth / 2, 29, { align: 'center' });
 
-  // Place Wheel Image
-  const wheelSize = 148; // mm
+  // Place Centered & Enlarged Wheel Image
+  const wheelSize = 180; // mm
   const wheelX = (pageWidth - wheelSize) / 2;
-  const wheelY = 26;
+  const wheelY = 67;
   doc.addImage(wheelPngUrl, 'PNG', wheelX, wheelY, wheelSize, wheelSize, undefined, 'FAST');
 
-  // Stats Section
-  if (includeStats) {
-    const statsY = 177;
-
-    // Section title
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    if (isLight) {
-      doc.setTextColor(36, 41, 47);
-    } else {
-      doc.setTextColor(240, 246, 252);
-    }
-    doc.text('Progresso, Metas & Sequências', 15, statsY);
-
-    // Calculate achievements
-    const achieved = Array(HABITS_COUNT).fill(0);
-    for (const key in state.cells) {
-      if (state.cells[key]) {
-        const match = key.match(/d\d+-h(\d+)/);
-        if (match) achieved[parseInt(match[1])]++;
-      }
-    }
-
-    // Grid: 2 columns x 4 rows
-    const colWidth = 87;
-    const cardHeight = 18;
-    const colGap = 6;
-    const rowGap = 3.5;
-    const startX = 15;
-    const startCardsY = statsY + 4;
-
-    for (let h = 0; h < HABITS_COUNT; h++) {
-      const col = h % 2;
-      const row = Math.floor(h / 2);
-
-      const cardX = startX + col * (colWidth + colGap);
-      const cardY = startCardsY + row * (cardHeight + rowGap);
-
-      // Card Background
-      if (isLight) {
-        doc.setFillColor(246, 248, 250);
-        doc.setDrawColor(208, 215, 222);
-      } else {
-        doc.setFillColor(22, 27, 34);
-        doc.setDrawColor(48, 54, 61);
-      }
-      doc.roundedRect(cardX, cardY, colWidth, cardHeight, 2, 2, 'FD');
-
-      // Habit Color Dot
-      const habitRgb = hexToRgb(colors[h]);
-      doc.setFillColor(habitRgb.r, habitRgb.g, habitRgb.b);
-      doc.circle(cardX + 6, cardY + 5.5, 2.2, 'F');
-
-      // Habit Name
-      const habitName = (state.habits?.[h]?.trim() || `Hábito #${h + 1}`);
-      const truncatedName = habitName.length > 22 ? habitName.substring(0, 20) + '...' : habitName;
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
-      if (isLight) {
-        doc.setTextColor(36, 41, 47);
-      } else {
-        doc.setTextColor(240, 246, 252);
-      }
-      doc.text(truncatedName, cardX + 11, cardY + 6.5);
-
-      // Stats Text & Streak: "Realizado: X / Meta: Y (Z%) • Seq: Wd"
-      const target = state.targets?.[h] || daysCount;
-      const count = achieved[h];
-      const percent = target > 0 ? Math.round((count / target) * 100) : 0;
-      const { bestStreak } = calculateHabitStreaks(state.cells, h, daysCount);
-      const streakStr = bestStreak > 0 ? ` • Recorde: ${bestStreak}d` : '';
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.5);
-      if (isLight) {
-        doc.setTextColor(87, 96, 106);
-      } else {
-        doc.setTextColor(139, 148, 158);
-      }
-      doc.text(`Realizado: ${count}/${target} dias (${percent}%)${streakStr}`, cardX + 11, cardY + 11);
-
-      // Progress Bar Track
-      const barX = cardX + 11;
-      const barY = cardY + 13;
-      const barWidth = colWidth - 16;
-      const barHeight = 2.2;
-
-      if (isLight) {
-        doc.setFillColor(225, 228, 232);
-      } else {
-        doc.setFillColor(33, 38, 45);
-      }
-      doc.roundedRect(barX, barY, barWidth, barHeight, 1, 1, 'F');
-
-      // Progress Bar Fill
-      const fillWidth = Math.min(barWidth, Math.max(0, barWidth * (percent / 100)));
-      if (fillWidth > 0) {
-        doc.setFillColor(habitRgb.r, habitRgb.g, habitRgb.b);
-        doc.roundedRect(barX, barY, fillWidth, barHeight, 1, 1, 'F');
-      }
-    }
-  }
-
   // Footer & Heatmap Legend
-  const footerY = 276;
+  const footerY = 280;
 
   // Heatmap Legend
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
+  doc.setFontSize(8);
   if (isLight) {
     doc.setTextColor(87, 96, 106);
   } else {
@@ -455,9 +350,9 @@ export async function generateAndDownloadPdf({
   }
   doc.text('Menos', 15, footerY + 2.5);
 
-  const legendBoxSize = 3;
+  const legendBoxSize = 3.2;
   const legendBoxGap = 1.2;
-  let legendStartX = 25;
+  let legendStartX = 26;
 
   for (let l = 0; l < levels.length; l++) {
     const lRgb = hexToRgb(levels[l]);
@@ -470,7 +365,7 @@ export async function generateAndDownloadPdf({
     doc.roundedRect(legendStartX + l * (legendBoxSize + legendBoxGap), footerY, legendBoxSize, legendBoxSize, 0.5, 0.5, 'FD');
   }
 
-  const legendTextX = legendStartX + levels.length * (legendBoxSize + legendBoxGap) + 1.5;
+  const legendTextX = legendStartX + levels.length * (legendBoxSize + legendBoxGap) + 1.8;
   doc.text('Mais', legendTextX, footerY + 2.5);
 
   // Footer right info
